@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, QMimeData
 from PyQt5.QtGui import QDrag
 from PyQt5.QtWidgets import QMessageBox
+import os
 
 class RuleList(QListWidget):
     MIME_TYPE = 'application/x-rule-item'
@@ -142,11 +143,15 @@ class RuleList(QListWidget):
             self.setCurrentRow(index + 1)
 
     def delete_selected(self):
+        index = self.currentRow()
         item = self.currentItem()
         if item:
             rule = item.data(Qt.UserRole)
             self.rules_parent.remove(rule)
             self.refresh_list()
+            if self.count() > 0:
+                next_index = min(index, self.count() - 1)
+                self.setCurrentRow(next_index)
             print("[删除] 删除规则：", rule.findtext("nameOverride"))
 
 class MainWindow(QWidget):
@@ -173,7 +178,11 @@ class MainWindow(QWidget):
         self.active_rule_list = None
 
     def load_xml(self):
-        files, _ = QFileDialog.getOpenFileNames(self, '选择 XML 文件', '', 'XML 文件 (*.xml)')
+        default_path = os.path.join(
+            os.getenv("USERPROFILE"),
+            "AppData", "LocalLow", "Eleventh Hour Games", "Last Epoch", "Filters"
+        )
+        files, _ = QFileDialog.getOpenFileNames(self, '选择 XML 文件', default_path, 'XML 文件 (*.xml)')
         for file in files:
             vbox = QVBoxLayout()
             label = QLabel(file)
