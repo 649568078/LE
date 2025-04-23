@@ -142,11 +142,15 @@ class RuleList(QListWidget):
             self.setCurrentRow(index + 1)
 
     def delete_selected(self):
+        index = self.currentRow()
         item = self.currentItem()
         if item:
             rule = item.data(Qt.UserRole)
             self.rules_parent.remove(rule)
             self.refresh_list()
+            if self.count() > 0:
+                next_index = min(index, self.count() - 1)
+                self.setCurrentRow(next_index)
             print("[删除] 删除规则：", rule.findtext("nameOverride"))
 
 class MainWindow(QWidget):
