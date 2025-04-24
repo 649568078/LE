@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, QMimeData
 from PyQt5.QtGui import QDrag
 from PyQt5.QtWidgets import QMessageBox
+import os
 
 class RuleList(QListWidget):
     MIME_TYPE = 'application/x-rule-item'
@@ -177,7 +178,11 @@ class MainWindow(QWidget):
         self.active_rule_list = None
 
     def load_xml(self):
-        files, _ = QFileDialog.getOpenFileNames(self, '选择 XML 文件', '', 'XML 文件 (*.xml)')
+        default_path = os.path.join(
+            os.getenv("USERPROFILE"),
+            "AppData", "LocalLow", "Eleventh Hour Games", "Last Epoch", "Filters"
+        )
+        files, _ = QFileDialog.getOpenFileNames(self, '选择 XML 文件', default_path, 'XML 文件 (*.xml)')
         for file in files:
             vbox = QVBoxLayout()
             label = QLabel(file)

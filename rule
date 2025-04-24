@@ -1,0 +1,1 @@
+pyinstaller --windowed --name "最后纪元过滤编辑器1.2" main.py
